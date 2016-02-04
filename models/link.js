@@ -5,12 +5,12 @@ var crypto = require('crypto');
 var Link = module.exports;
 
 Link.all = function () {
-  return db('urls').select('*');
+  return db.collection('urls').find();
 };
 
 
 Link.findByUrl = function (url) {
-  return db('urls').select('*').where({ url: url }).limit(1)
+  return db.collection('urls').find({ url: url })
     .then(function(rows) {
       return rows[0] || Promise.reject(new Error('no_such_link'))
     });
@@ -18,7 +18,7 @@ Link.findByUrl = function (url) {
 
 
 Link.findByCode = function (code) {
-  return db('urls').select('*').where({ code: code }).limit(1)
+  return db.collection('urls').find({ code: code })
     .then(function(rows) {
       return rows[0] || Promise.reject(new Error('no_such_link'))
     });
@@ -32,14 +32,14 @@ Link.create = function (attrs) {
   shasum.update(attrs.url);
   attrs.code = shasum.digest('hex').slice(0, 5);
 
-  return db('urls').insert(attrs).then(function () {
+  return db.collection('urls').insert(attrs).then(function () {
     return attrs
   });
 };
 
 
 Link.recordClick = function (linkId) {
-  return db('clicks').insert({ link_id: linkId });
+  return db.collection('clicks').insert({ link_id: linkId });
 };
 
 module.exports = Link;

@@ -2,6 +2,18 @@ var express = require('express');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
+var db = require('./lib/db');
+// var mongo = new Mongo('host[:27017]');
+
+// //retrieve
+// var MongoClient = require('mongodb').MongoClient;
+// // Connect to the db
+// MongoClient.connect("/localhost:27017", function(err, db) {
+//   if(!err) {
+//     console.log("We are connected");
+//   }
+// });
+
 
 
 require('./db/config');
@@ -168,14 +180,14 @@ app.post('/sign-up', function(req, res) {
         res.status(500).send(err.message)
       }
     })
-  
+
 });
 
 
 app.get('/sign-in', function (req, res) {
 
   res.render('signin');
-  
+
 });
 
 app.post('/sign-in', function(req, res) {
@@ -207,7 +219,7 @@ app.post('/sign-in', function(req, res) {
         res.status(500).send(err.message);
       }
     });
-  
+
 });
 
 
@@ -245,5 +257,9 @@ if ( process.env.NODE_ENV === 'test' ) {
 else {
   var port = process.env.PORT || 3000
   console.log('Shortly is listening on ' + port);
-  app.listen(port);
+  db.connect(function(){
+  User.addToTest()
+
+    app.listen(port)})
+
 }
